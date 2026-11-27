@@ -478,5 +478,20 @@ inspect and analyze requests share that snapshot. Multi-replica deployments
 need a shared snapshot store or stateless selection design. Railway health
 checks gate deployment startup and are not continuous monitoring. Nginx adds
 a same-origin CSP and browser security headers. Rate limits and the absence of
-user authentication remain deployment limitations. No cloud resources or
-deployment have been created.
+user authentication remain deployment limitations. The Vercel/Render routing
+setup is described below; service settings remain managed in their dashboards.
+
+## Vercel frontend with Render backend
+
+The Vercel frontend project uses `frontend/` as its root directory. Its
+`frontend/vercel.json` rewrites same-origin `/api/*`, `/health`, `/docs`,
+`/redoc`, and `/openapi.json` requests to the Render backend. Browser code keeps
+using relative paths; no backend URL or CORS setting is needed in the frontend.
+The Vercel rewrite destination is configured in that JSON file, so update it
+there if the Render backend URL changes.
+
+In Vercel, confirm the project root is `frontend`, the framework is Vite, the
+build command is `npm run build`, and the output directory is `dist`. Keep the
+Render backend URL centralized in the routing configuration and verify `/health`,
+`/api/rules`, and a code-analysis request on the deployed Vercel domain after
+the next deployment.

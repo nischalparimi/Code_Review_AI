@@ -1,0 +1,33 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://codereview-ai-backend-94y5.onrender.com/api/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://codereview-ai-backend-94y5.onrender.com/health"
+    },
+    {
+      "source": "/docs",
+      "destination": "https://codereview-ai-backend-94y5.onrender.com/docs"
+    },
+    {
+      "source": "/docs/:path*",
+      "destination": "https://codereview-ai-backend-94y5.onrender.com/docs/:path*"
+    },
+    {
+      "source": "/redoc",
+      "destination": "https://codereview-ai-backend-94y5.onrender.com/redoc"
+    },
+    {
+      "source": "/redoc/:path*",
+      "destination": "https://codereview-ai-backend-94y5.onrender.com/redoc/:path*"
+    },
+    {
+      "source": "/openapi.json",
+      "destination": "https://codereview-ai-backend-94y5.onrender.com/openapi.json"
+    }
+  ]
+}
