@@ -1,0 +1,58 @@
+name: Automated Code Review
+
+# This workflow is the "automation" piece of the project: instead of a
+# person running cli.py by hand, GitHub runs it automatically every time
+# code is pushed or a pull request is opened. This is the CI/CD stage
+# described in the project architecture (CI/CD Automation Layer).
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  static-analysis:
+    name: Run static analysis engine
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Get the code onto the runner (equivalent to "Source Code
+      # Commit" in the pipeline diagram).
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python (equivalent to "Checkout & Dependency
+      # Install" stage).
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Step 3: Run the actual analysis engine ("Static Analysis" stage).
+      # This scans the project's own source code (the analyzer package
+      # and cli.py) — NOT samples/, since samples/bad_example.py is
+      # intentionally flawed for demo/testing purposes and would always
+      # fail the gate on purpose.
+      - name: Run static analysis on the codebase
+        run: python cli.py analyzer --json report.json --chart report_chart.png
+
+      # Step 4: Run the automated test suite ("Unit & Integration Tests"
+      # stage) so a broken rule can never silently merge.
+      - name: Run unit tests
+        run: python -m pytest tests/ -v
+
+      # Step 5: Save the report and chart so they can be downloaded from
+      # the GitHub Actions run page — this is the "artifact" a reviewer
+      # or teammate would look at without needing to run anything locally.
+      - name: Upload analysis report and chart
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-review-report
+          path: |
+            report.json
+            report_chart.png
