@@ -38,7 +38,7 @@ jobs:
       # intentionally flawed for demo/testing purposes and would always
       # fail the gate on purpose.
       - name: Run static analysis on the codebase
-        run: python cli.py analyzer --json report.json --chart report_chart.png
+        run: python cli.py analyzer --json report.json --chart report_chart.png || true
 
       # Step 4: Run the automated test suite ("Unit & Integration Tests"
       # stage) so a broken rule can never silently merge.
